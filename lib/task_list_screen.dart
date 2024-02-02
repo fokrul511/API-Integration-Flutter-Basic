@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:crud_task_apps/add_task_list_screen.dart';
 import 'package:crud_task_apps/edit_task_list_screen.dart';
+import 'package:crud_task_apps/product.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 enum myPopUpButtonItem {
   edit,
@@ -15,64 +19,82 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
+  List<Product> productList = [];
+  bool isCircularProgress = false;
+
+  @override
+  void initState() {
+    getProductFromApi();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task List'),
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: const Text('Product Name'),
-            subtitle: const Wrap(
-              spacing: 16.0,
-              children: [
-                Text('Proudcut Code'),
-                Text('Proudcut Code'),
-                Text('Unit Price'),
-                Text('Quantity'),
-                Text('Total Price'),
-              ],
-            ),
-            leading: const CircleAvatar(
-              backgroundImage: NetworkImage('https://avatars.githubusercontent.com/u/73265474?v=4'),
-            ),
-            trailing: PopupMenuButton<myPopUpButtonItem>(
-              onSelected: onTapPoupMenuButton,
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  onTap: () {
-                    print('edit');
-                  },
-                  value: myPopUpButtonItem.edit,
-                  child: const Row(
-                    children: [
-                      Icon(Icons.edit),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text('Edit'),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem(
-                  value: myPopUpButtonItem.delete,
-                  child: Row(
-                    children: [
-                      Icon(Icons.delete_outline),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text('Delete'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          getProductFromApi();
         },
+        child: Visibility(
+          visible: isCircularProgress == false,
+          replacement: Center(child: CircularProgressIndicator()),
+          child: ListView.builder(
+            itemCount: productList.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(productList[index].productName.toString()),
+                subtitle: Wrap(
+                  spacing: 16.0,
+                  children: [
+                    Text(productList[index].productCode ?? ''),
+                    Text(productList[index].unitPrice ?? ''),
+                    Text(productList[index].productQuantity.toString() ?? ''),
+                    Text(productList[index].totalPric.toString() ?? ''),
+                  ],
+                ),
+                leading: CircleAvatar(
+                  backgroundImage:
+                      NetworkImage(productList[index].image.toString() ?? ''),
+                ),
+                trailing: PopupMenuButton<myPopUpButtonItem>(
+                  onSelected: onTapPoupMenuButton,
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      onTap: () {
+                        print('edit');
+                      },
+                      value: myPopUpButtonItem.edit,
+                      child: const Row(
+                        children: [
+                          Icon(Icons.edit),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text('Edit'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: myPopUpButtonItem.delete,
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete_outline),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text('Delete'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.blue,
@@ -129,4 +151,32 @@ class _TaskListScreenState extends State<TaskListScreen> {
       },
     );
   }
+
+  Future<void> getProductFromApi() async {
+    isCircularProgress = true;
+    setState(() {});
+    //step 1
+    Uri uri = Uri.parse("https://crud.teamrabbil.com/api/v1/ReadProduct");
+    //step 2
+    http.Response response = await http.get(uri);
+    //step 3
+    if (response.statusCode == 200) {
+      productList.clear();
+      var decodeRespon = jsonDecode(response.body);
+      print(response);
+      print(response.statusCode);
+      print(response.body);
+      if (decodeRespon['status'] == 'success') {
+        var list = decodeRespon['data'];
+        for (var item in list) {
+          Product product = Product.jason(item);
+          productList.add(product);
+        }
+        setState(() {});
+      }
+      isCircularProgress = false;
+      setState(() {});
+    }
+  }
+
 }

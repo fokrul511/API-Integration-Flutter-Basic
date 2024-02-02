@@ -1,5 +1,7 @@
-import 'package:crud_task_apps/task_list_screen.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AddTaskListScreen extends StatefulWidget {
   const AddTaskListScreen({super.key});
@@ -20,12 +22,13 @@ class _AddTaskListScreenState extends State<AddTaskListScreen> {
 
   //--------------------------------------------------------
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  bool isButtonProgress = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Product'),
+        title: const Text('Add Product'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -70,7 +73,7 @@ class _AddTaskListScreenState extends State<AddTaskListScreen> {
                     }
                     return null;
                   },
-                  controller: _totalPriceController,
+                  controller: _unitPriceController,
                   decoration: InputDecoration(hintText: 'Unit Price'),
                 ),
                 const SizedBox(
@@ -97,7 +100,7 @@ class _AddTaskListScreenState extends State<AddTaskListScreen> {
                     return null;
                   },
                   controller: _totalPriceController,
-                  decoration: InputDecoration(hintText: 'Total Price'),
+                  decoration: const InputDecoration(hintText: 'Total Price'),
                 ),
                 const SizedBox(
                   height: 8.0,
@@ -117,13 +120,19 @@ class _AddTaskListScreenState extends State<AddTaskListScreen> {
                 ),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_globalKey.currentState!.validate()) {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Text('Add'),
+                  child: Visibility(
+                    visible: isButtonProgress == false,
+                    replacement: Center(child: CircularProgressIndicator()),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_globalKey.currentState!.validate()) {
+                          createNewPost();
+                          clearTextFild();
+                          // Navigator.pop(context);
+                        }
+                      },
+                      child: Text('Add'),
+                    ),
                   ),
                 )
               ],
@@ -134,4 +143,45 @@ class _AddTaskListScreenState extends State<AddTaskListScreen> {
     );
   }
 
+  Future<void> createNewPost() async {
+    isButtonProgress = true;
+    setState(() {});
+    Uri uri = Uri.parse('https://crud.teamrabbil.com/api/v1/CreateProduct');
+    Map<String, dynamic> prams = {
+      "Img": _imageController.text.trim() ?? '',
+      "ProductCode": _productCodeController.text.trim(),
+      "ProductName": _productNameController.text.trim(),
+      "Qty": _productQuantityController.text.trim(),
+      "TotalPrice": _totalPriceController.text.trim(),
+      "UnitPrice": _unitPriceController.text.trim(),
+    };
+    http.Response response = await http.post(uri,
+        body: jsonEncode(prams), headers: {'Content-type': 'Application/json'});
+    if (response.statusCode == 200) {
+      clearTextFild();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successfuly Created')));
+    }
+    isButtonProgress = false;
+    setState(() {});
+  }
+
+  //
+  void clearTextFild() {
+    _unitPriceController.clear();
+    _totalPriceController.clear();
+    _productQuantityController.clear();
+    _productNameController.clear();
+    _productCodeController.clear();
+    _imageController.clear();
+  }
+  @override
+  void dispose() {
+   _imageController.clear();
+   _productCodeController.clear();
+   _productNameController.clear();
+   _productQuantityController.clear();
+   _unitPriceController.clear();
+   _totalPriceController.clear();
+    super.dispose();
+  }
 }

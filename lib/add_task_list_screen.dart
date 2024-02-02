@@ -148,7 +148,7 @@ class _AddTaskListScreenState extends State<AddTaskListScreen> {
     setState(() {});
     Uri uri = Uri.parse('https://crud.teamrabbil.com/api/v1/CreateProduct');
     Map<String, dynamic> prams = {
-      "Img": _imageController.text.trim() ?? '',
+      "Img": _imageController.text.trim(),
       "ProductCode": _productCodeController.text.trim(),
       "ProductName": _productNameController.text.trim(),
       "Qty": _productQuantityController.text.trim(),

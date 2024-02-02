@@ -49,15 +49,16 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 subtitle: Wrap(
                   spacing: 16.0,
                   children: [
-                    Text(productList[index].productCode ?? ''),
-                    Text(productList[index].unitPrice ?? ''),
-                    Text(productList[index].productQuantity.toString() ?? ''),
-                    Text(productList[index].totalPric.toString() ?? ''),
+                    Text(productList[index].productCode ?? 'knwon'),
+                    Text(productList[index].unitPrice ?? 'knwon'),
+                    Text(productList[index].productQuantity.toString() ??
+                        'knwon'),
+                    Text(productList[index].totalPric.toString() ?? 'knwon'),
                   ],
                 ),
                 leading: CircleAvatar(
-                  backgroundImage:
-                      NetworkImage(productList[index].image.toString() ?? ''),
+                  backgroundImage: NetworkImage(
+                      productList[index].image.toString() ?? 'knwon'),
                 ),
                 trailing: PopupMenuButton<myPopUpButtonItem>(
                   onSelected: onTapPoupMenuButton,
@@ -178,5 +179,4 @@ class _TaskListScreenState extends State<TaskListScreen> {
       setState(() {});
     }
   }
-
 }

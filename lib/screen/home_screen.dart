@@ -1,9 +1,20 @@
+import 'package:crud_task_apps/RestApi/clientApi.dart';
 import 'package:crud_task_apps/style/style.dart';
 import 'package:flutter/material.dart';
 
-class ProductHomeScreen extends StatelessWidget {
+class ProductHomeScreen extends StatefulWidget {
   const ProductHomeScreen({super.key});
 
+  @override
+  State<ProductHomeScreen> createState() => _ProductHomeScreenState();
+}
+
+class _ProductHomeScreenState extends State<ProductHomeScreen> {
+  @override
+  void initState() {
+    getProduct();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

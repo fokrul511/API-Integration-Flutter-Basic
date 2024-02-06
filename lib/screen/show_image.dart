@@ -28,7 +28,7 @@ class ShowImageDitails extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Text("ID: $id"??'', style: const TextStyle(fontSize: 18)),
+              Text("ID: $id", style: const TextStyle(fontSize: 18)),
             ],
           ),
         ),

@@ -61,12 +61,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       productList[index].image.toString() ?? 'knwon'),
                 ),
                 trailing: PopupMenuButton<myPopUpButtonItem>(
-                  onSelected: onTapPoupMenuButton,
+                  onSelected: (type) =>
+                      onTapPoupMenuButton(type, productList[index]),
                   itemBuilder: (context) => [
                     PopupMenuItem(
-                      onTap: () {
-                        print('edit');
-                      },
+                      onTap: () {},
                       value: myPopUpButtonItem.edit,
                       child: const Row(
                         children: [
@@ -114,14 +113,18 @@ class _TaskListScreenState extends State<TaskListScreen> {
     );
   }
 
-  void onTapPoupMenuButton(myPopUpButtonItem type) {
+  Future<void> onTapPoupMenuButton(myPopUpButtonItem type, Product product) async {
     switch (type) {
       case myPopUpButtonItem.edit:
         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditTaskListScreen(),
-            ));
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditTaskListScreen(product: product),
+          ),
+        );
+        // if (result != null && result == true) {
+        //   getProductFromApi();
+        // }
         break;
       case myPopUpButtonItem.delete:
         showDilago();

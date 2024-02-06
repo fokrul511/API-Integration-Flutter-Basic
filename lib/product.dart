@@ -28,13 +28,24 @@ class Product {
       this.createdDate});
 
   Product.jason(Map<String, dynamic> jason) {
-    id= jason['_id'];
-    productName= jason['ProductName'];
-    image= jason['Img'];
-    createdDate= jason['CreatedDate'];
-    productCode= jason['ProductCode'];
-    productQuantity= jason['Qty'];
-    totalPric= jason['TotalPrice'];
-    unitPrice= jason['UnitPrice'];
+    id = jason['_id'];
+    productName = jason['ProductName'];
+    image = jason['Img'];
+    createdDate = jason['CreatedDate'];
+    productCode = jason['ProductCode'];
+    productQuantity = jason['Qty'];
+    totalPric = jason['TotalPrice'];
+    unitPrice = jason['UnitPrice'];
+  }
+
+  Map<String, dynamic> tojason() {
+    return {
+      "Img": image,
+      "ProductCode": productCode,
+      "ProductName": productName,
+      "Qty": productQuantity,
+      "TotalPrice": totalPric,
+      "UnitPrice": unitPrice,
+    };
   }
 }

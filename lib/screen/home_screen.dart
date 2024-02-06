@@ -15,21 +15,14 @@ class _ProductHomeScreenState extends State<ProductHomeScreen> {
   loadData() async {
     var data = await getProduct();
     var productList = data;
-    print(productList);
     setState(() {});
-  }
-
-  @override
-  void initState() {
-    loadData();
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Home Screen'),
+        title: const Text('Product Screen'),
       ),
       body: GridView.builder(
         itemCount: productList.length,
@@ -45,7 +38,7 @@ class _ProductHomeScreenState extends State<ProductHomeScreen> {
               children: [
                 Expanded(
                   child: Image(
-                    image: NetworkImage(productList[index]['Img']),
+                    image: NetworkImage(productList[index]["Img"] ?? ''),
                     fit: BoxFit.cover,
                     width: MediaQuery.sizeOf(context).width,
                   ),
@@ -57,7 +50,7 @@ class _ProductHomeScreenState extends State<ProductHomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        productList[index]['ProductName'],
+                        productList[index]["ProductName"] ?? '',
                         style: const TextStyle(fontSize: 20),
                       ),
                       Text('Price: ', style: TextStyle(fontSize: 18)),

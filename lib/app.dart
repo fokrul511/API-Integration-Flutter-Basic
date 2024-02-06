@@ -1,5 +1,4 @@
 import 'package:crud_task_apps/screen/home_screen.dart';
-import 'package:crud_task_apps/screen/product_create_screen.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -10,7 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.purple,
+          backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
         ),
       ),

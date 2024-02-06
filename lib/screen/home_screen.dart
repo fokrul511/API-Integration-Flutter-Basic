@@ -1,6 +1,10 @@
-import 'package:crud_task_apps/RestApi/clientApi.dart';
-import 'package:crud_task_apps/style/style.dart';
+import 'dart:convert';
+
+import 'package:crud_task_apps/screen/show_image.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+
+import '../data/gellery.dart';
 
 class ProductHomeScreen extends StatefulWidget {
   const ProductHomeScreen({super.key});
@@ -10,68 +14,82 @@ class ProductHomeScreen extends StatefulWidget {
 }
 
 class _ProductHomeScreenState extends State<ProductHomeScreen> {
-  List productList = [];
+  List<Gallery> albumList = [];
+  bool load = false;
 
-  loadData() async {
-    var data = await getProduct();
-    var productList = data;
-    setState(() {});
+  @override
+  void initState() {
+    getProductd();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Product Screen'),
+        title: const Text('Photo Gallery App'),
       ),
-      body: GridView.builder(
-        itemCount: productList.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 2,
-          crossAxisSpacing: 2,
+      body: Visibility(
+        visible: load == false,
+        replacement: const Center(
+          child: CircularProgressIndicator(),
         ),
-        itemBuilder: (context, index) {
-          return Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Image(
-                    image: NetworkImage(productList[index]["Img"] ?? ''),
-                    fit: BoxFit.cover,
-                    width: MediaQuery.sizeOf(context).width,
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView.separated(
+            itemCount: albumList.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ShowImageDitails(
+                          title: albumList[index].title,
+                          id: albumList[index].id,
+                          bigImage: albumList[index].bigImage),
+                    ),
+                  );
+                },
+                leading: Image(
+                  image: NetworkImage(albumList[index].image),
                 ),
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.only(top: 5, left: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        productList[index]["ProductName"] ?? '',
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                      Text('Price: ', style: TextStyle(fontSize: 18)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.delete_outline)),
-                        ],
-                      )
-                    ],
-                  ),
-                )),
-              ],
-            ),
-          );
-        },
+                title: Text(albumList[index].title),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return const Divider(
+                thickness: 2,
+              );
+            },
+          ),
+        ),
       ),
-      floatingActionButton: floatingActionButton(context),
     );
+  }
+
+  Future<void> getProductd() async {
+    load = true;
+    setState(() {});
+    Uri url = Uri.parse('https://jsonplaceholder.typicode.com/photos');
+    // var postHeader = {'Content-Type': 'application/json'};
+    Response response = await get(url);
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200) {
+      var responsBody = jsonDecode(response.body);
+      var data = responsBody;
+      for (var item in data) {
+        Gallery gallery = Gallery(
+            id: item['id'],
+            title: item['title'],
+            image: item['thumbnailUrl'],
+            bigImage: item['url']);
+        albumList.add(gallery);
+      }
+      setState(() {});
+    }
+    load = false;
+    setState(() {});
   }
 }

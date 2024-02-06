@@ -10,18 +10,21 @@ class ProductHomeScreen extends StatefulWidget {
 }
 
 class _ProductHomeScreenState extends State<ProductHomeScreen> {
+  List productList = [];
 
-  loadData(){
-    var data = getProduct();
-
+  loadData() async {
+    var data = await getProduct();
+    var productList = data;
+    print(productList);
+    setState(() {});
   }
-
 
   @override
   void initState() {
-    getProduct();
+    loadData();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +32,7 @@ class _ProductHomeScreenState extends State<ProductHomeScreen> {
         title: Text('Product Home Screen'),
       ),
       body: GridView.builder(
-        itemCount: 10,
+        itemCount: productList.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: 2,
@@ -42,8 +45,7 @@ class _ProductHomeScreenState extends State<ProductHomeScreen> {
               children: [
                 Expanded(
                   child: Image(
-                    image: NetworkImage(
-                        'https://avatars.githubusercontent.com/u/73265474?v=4'),
+                    image: NetworkImage(productList[index]['Img']),
                     fit: BoxFit.cover,
                     width: MediaQuery.sizeOf(context).width,
                   ),
@@ -55,8 +57,8 @@ class _ProductHomeScreenState extends State<ProductHomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Product Name',
-                        style: TextStyle(fontSize: 20),
+                        productList[index]['ProductName'],
+                        style: const TextStyle(fontSize: 20),
                       ),
                       Text('Price: ', style: TextStyle(fontSize: 18)),
                       Row(

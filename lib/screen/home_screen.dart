@@ -10,6 +10,13 @@ class ProductHomeScreen extends StatefulWidget {
 }
 
 class _ProductHomeScreenState extends State<ProductHomeScreen> {
+
+  loadData(){
+    var data = getProduct();
+
+  }
+
+
   @override
   void initState() {
     getProduct();

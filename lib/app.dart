@@ -1,8 +1,8 @@
-import 'package:crud_task_apps/task_list_screen.dart';
+import 'package:crud_task_apps/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class CrudApp extends StatelessWidget {
+  const CrudApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,27 +15,23 @@ class MyApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(),
-          errorBorder: OutlineInputBorder(),
+          enabledBorder: OutlineInputBorder(),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red),
+          ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(
-              vertical: 18,
-              horizontal: 22,
-            ),
-            backgroundColor: Colors.amber,
-            foregroundColor: Colors.black,
-            textStyle: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+            backgroundColor: Colors.blue,
+            minimumSize: Size(double.infinity, 44),
+            textStyle: TextStyle(fontSize: 20),
+            foregroundColor: Colors.white
+          )
         ),
         useMaterial3: true,
       ),
-      home: const TaskListScreen(),
+      home: HomeScreen(),
     );
   }
 }

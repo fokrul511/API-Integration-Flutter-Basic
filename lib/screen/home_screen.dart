@@ -13,7 +13,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Weather Info app'),
+        title: const Text('Weather Info app '),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

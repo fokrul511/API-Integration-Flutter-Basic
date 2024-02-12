@@ -1,55 +1,47 @@
-import 'package:crud_task_apps/screen/add_new_task.dart';
+import 'package:crud_task_apps/waterList.dart';
 import 'package:flutter/material.dart';
 
-enum PopUpmenuButton {
-  edit,
-  delete,
-}
-
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('Weather Info app'),
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('My Title'),
-            subtitle: Text('Subtitle'),
-            trailing: PopupMenuButton<PopUpmenuButton>(
-              onSelected: (selectedMenu) {},
-              itemBuilder: (context) {
-                return [
-                  PopupMenuItem(
-                      child: Text('Delete'), value: PopUpmenuButton.delete),
-                  PopupMenuItem(
-                      child: Text('Edit'), value: PopUpmenuButton.edit),
-                ];
-              },
-            ),
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://avatars.githubusercontent.com/u/73265474?v=4',
-              ),
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddNewTask(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: watherInfo.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: ListTile(
+
+                  title: Text('City: ${watherInfo[index]['city']}'),
+                  subtitle: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('temperature: ${watherInfo[index]['temperature']}⁰C'),
+                      Text('condition: ${watherInfo[index]['condition']}'),
+                      Text('humidity: ${watherInfo[index]['humidity']}%'),
+                      Text('windSpeed: ${watherInfo[index]['windSpeed']} m/s'),
+                    ],
+                  ),
+                ),
               ),
             );
           },
-          child: Text('Add')),
+        ),
+      ),
     );
   }
 }
